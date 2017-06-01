@@ -9,9 +9,9 @@ int main(int argc, char *argv[]){
         fprintf(stderr, "usage: %s <port>\n", argv[0]);
         exit(0);
     }
-    port = atoi(argv[1]);
+    port = atoi(argv[1]);                               //atoi将字符串转换成整形
     
-    listenFd = OpenListenFd(port);  //创建监听描述符
+    listenFd = OpenListenFd(port);                      //创建监听描述符
     
     while(true){
         clientLen = sizeof(clientAddr);
@@ -54,7 +54,7 @@ void doit(int connectFd){
     printf("4\n");
     int isStatic;  //用于区分动静态服务
     char filename[MAXLINE], cgiArgs[MAXLINE];
-    struct stat sbuf;
+    struct stat sbuf;                                          //stat:通过文件名filename获取文件信息，并保存在buf所指的结构体stat中
     isStatic = parseUri(rl.uri, filename, cgiArgs);
     
     printf("%s %s %d\n", filename, cgiArgs, isStatic);
@@ -132,7 +132,7 @@ void clientError(int connectFd, char *cause, char *errNo, char *shortMsg, char *
     char body[MAXBODY];
     
     /*填充响应主体*/
-    sprintf(body, "<html><title>Mini-WebServer Error</title>");
+    sprintf(body, "<html><title>Mini-WebServer Error</title>");         //springtf():把整数打印到字符串
     sprintf(body, "%s<body bgcolor=""ffffff"">\r\n", body);
     sprintf(body, "%s%s: %s\r\n", body, errNo, shortMsg);
     sprintf(body, "%s<p>%s: %s\r\n",body, longMsg, cause);
@@ -150,10 +150,10 @@ void clientError(int connectFd, char *cause, char *errNo, char *shortMsg, char *
 
 int parseUri(char *uri, char *filename, char *cgiArgs){
     char *ptr;
-    if(!strstr(uri, "cgi_bin")){  //静态内容 
+    if(!strstr(uri, "cgi_bin")){  //静态内容 ，strstr(str1,str2) 函数用于判断字符串str2是否是str1的子串
         strcpy(cgiArgs, ""); //置空
         strcpy(filename, "."); //默认目录为当前目录
-        strcat(filename, uri);
+        strcat(filename, uri);    // strcat连接字符串
         /*文件名缺省*/
         if(uri[strlen(uri) - 1] = '/'){
             strcat(filename, "index.html");
