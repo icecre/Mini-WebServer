@@ -9,23 +9,23 @@ int openListenFd(int port){
     int listenFd;
     struct sockaddr_in myAddr;
     
-    if((listenFd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
+    if((listenFd = socket(AF_INET, SOCK_STREAM, 0)) < 0){          //socket()返回引用新套接口的描述字
         return -1;
     }
     
     /*初始化服务器套接字地址*/
-    memset(&myAddr, 0, sizeof(myAddr));
+    memset(&myAddr, 0, sizeof(myAddr));                            //作用是在一段内存块中填充某个给定的值，它是对较大的结构体或数组进行清零操作的一种最快方法
     myAddr.sin_family = AF_INET;
     myAddr.sin_port = htons((unsigned short)port);
     myAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     
     /*将描述符与服务器套接字地址绑定*/
-    if(bind(listenFd, (SA*)&myAddr, sizeof(myAddr)) < 0){
+    if(bind(listenFd, (SA*)&myAddr, sizeof(myAddr)) < 0){          //将一本地地址与一套接口捆绑。本函数适用于未连接的数据报或流类套接口
         return -2;
     }
     
     /*将主动套接字转换为监听套接字*/
-    if(listen(listenFd, 9) < 0){
+    if(listen(listenFd, 9) < 0){                                   //创建一个套接口并监听申请的连接.
         return -3;
     }
     
@@ -90,7 +90,7 @@ void InitReadBuf(rio_t *rp, int fd){
 size_t rioRead(rio_t *rp, char *buf, size_t n){
     int cnt;
     while(rp->rio_cnt <= 0){
-        rp->rio_cnt = read(rp->rio_fd, rp->rio_buf, sizeof(rp->rio_buf));
+        rp->rio_cnt = read(rp->rio_fd, rp->rio_buf, sizeof(rp->rio_buf));         //read()会把参数fd所指的文件传送nbyte个字节到buf指针所指的内存中
         if(rp->rio_cnt < 0){
             if(errno == EINTR) //被中断
                 continue;
@@ -104,8 +104,8 @@ size_t rioRead(rio_t *rp, char *buf, size_t n){
     }
     cnt = n;
     if(cnt > rp->rio_cnt)
-        cnt = rp->rio_cnt;
-    memcpy(buf, rp->rio_bufptr, cnt);
+        cnt = rp->rio_cnt;                               //cnt:缓冲区内的可读数据字节数
+    memcpy(buf, rp->rio_bufptr, cnt);                    //由rp->rio_bufptr指向地址为起始地址的连续n个字节的数据复制到以buf指向地址为起始地址的空间内。
     rp->rio_cnt -= cnt;
     rp->rio_bufptr += cnt;
     
